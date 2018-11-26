@@ -15,13 +15,13 @@ filename = 'fer2013.csv'
 label_map = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
 
-def getData(filename):
+def getData(file_name):
     # images are 48x48
     # N = 35887
     Y = []
     X = []
     first = True
-    for line in open(filename):
+    for line in open(file_name):
         if first:
             first = False
         else:
@@ -29,8 +29,8 @@ def getData(filename):
             Y.append(int(row[0]))
             X.append([int(p) for p in row[1].split()])
 
-    X, Y = np.array(X) / 255.0, np.array(Y)
-    return X, Y
+    X, Y = np.array(X) / 255.0, np.array(Y)  # Convert values from 0 to 255 between 0 and 1
+    return X, Y  # Return X and Y arrays
 
 
 X, Y = getData(filename)
@@ -43,13 +43,13 @@ def balance_class(Y):
     count_class = {}
     for i in range(len(num_class)):
         count_class[i] = sum([1 for y in Y if y == i])
-    return count_class
+    return count_class  # Returns (count of) training data points such as anger, sad, happy, fear etc.
 
 
 balance = balance_class(Y)
 
-# keras with tensorflow backend
-N, D = X.shape
+# Keras with tensorflow backend
+N, D = X.shape  # Returns total number of input samples and no of pixels (48 * 48) in each sample
 X = X.reshape(N, 48, 48, 1)
 
 # Split in  training set : validation set :  testing set in 80:10:10
@@ -61,20 +61,20 @@ batch_size = 128
 epochs = 15
 
 
-#Shallow CNN model with two Convolution layer & one fully connected layer
+# Shallow CNN model with two Convolution layer & one fully connected layer
 def baseline_model():
     # Initialising the CNN
     model = Sequential()
 
     # 1 - Convolution
-    model.add(Conv2D(64,(3,3), border_mode='same', input_shape=(48, 48,1)))
+    model.add(Conv2D(64, (3, 3), border_mode='same', input_shape=(48, 48, 1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
 
     # 2nd Convolution layer
-    model.add(Conv2D(128,(5,5), border_mode='same'))
+    model.add(Conv2D(128, (5, 5), border_mode='same'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -96,12 +96,12 @@ def baseline_model():
 
 
 def baseline_model_saved():
-    #load json and create model
+    # load json and create model
     json_file = open('model_2layer_2_2_pool.json', 'r')
     loaded_model_json = json_file.read()
     json_file.close()
     model = model_from_json(loaded_model_json)
-    #load weights from h5 file
+    # load weights from h5 file
     model.load_weights("model_2layer_2_2_pool.h5")
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[categorical_accuracy])
     return model
@@ -135,11 +135,11 @@ else:
 
 # Model will predict the probability values for 7 labels for a test image
 score = model.predict(X_test)
-print (model.summary())
+print(model.summary())
 
-new_X = [np.argmax(item) for item in score ]
+new_X = [np.argmax(item) for item in score]
 y_test2 = [np.argmax(item) for item in y_test]
 
 # Calculating categorical accuracy taking label having highest probability
-accuracy = [(x == y) for x, y in zip(new_X,y_test2)]
+accuracy = [(x == y) for x, y in zip(new_X, y_test2)]
 print(" Accuracy on Test set : ", np.mean(accuracy))
