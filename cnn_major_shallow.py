@@ -1,17 +1,27 @@
 from __future__ import print_function
 import numpy as np
+from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Dense , Activation , Dropout ,Flatten
+from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import MaxPooling2D
+from keras.metrics import categorical_accuracy
+from keras.models import model_from_json
+from keras.optimizers import *
+from keras.layers.normalization import BatchNormalization
 
 # get the data
-filname = 'fer2013.csv'
+filename = 'fer2013.csv'
 label_map = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
-def getData(filname):
+
+def getData(filename):
     # images are 48x48
     # N = 35887
     Y = []
     X = []
     first = True
-    for line in open(filname):
+    for line in open(filename):
         if first:
             first = False
         else:
@@ -23,8 +33,9 @@ def getData(filname):
     return X, Y
 
 
-X, Y = getData(filname)
+X, Y = getData(filename)
 num_class = len(set(Y))
+
 
 # To see number of training data point available for each label
 def balance_class(Y):
@@ -34,6 +45,7 @@ def balance_class(Y):
         count_class[i] = sum([1 for y in Y if y == i])
     return count_class
 
+
 balance = balance_class(Y)
 
 # keras with tensorflow backend
@@ -41,25 +53,13 @@ N, D = X.shape
 X = X.reshape(N, 48, 48, 1)
 
 # Split in  training set : validation set :  testing set in 80:10:10
-from sklearn.model_selection import train_test_split
-
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, random_state=0)
 y_train = (np.arange(num_class) == y_train[:, None]).astype(np.float32)
 y_test = (np.arange(num_class) == y_test[:, None]).astype(np.float32)
 
-
-from keras.models import Sequential
-from keras.layers import Dense , Activation , Dropout ,Flatten
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
-from keras.metrics import categorical_accuracy
-from keras.models import model_from_json
-
-from keras.optimizers import *
-from keras.layers.normalization import BatchNormalization
-
 batch_size = 128
 epochs = 15
+
 
 #Shallow CNN model with two Convolution layer & one fully connected layer
 def baseline_model():
@@ -79,7 +79,6 @@ def baseline_model():
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
-
 
     # Flattening
     model.add(Flatten())
@@ -107,10 +106,12 @@ def baseline_model_saved():
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[categorical_accuracy])
     return model
 
+
 is_model_saved = True
 
+
 # If model is not saved train the CNN model otherwise just load the weights
-if(is_model_saved==False ):
+if not is_model_saved:
     # Train model
     model = baseline_model()
     # Note : 3259 samples is used as validation data &   28,709  as training samples
@@ -136,9 +137,9 @@ else:
 score = model.predict(X_test)
 print (model.summary())
 
-new_X = [ np.argmax(item) for item in score ]
-y_test2 = [ np.argmax(item) for item in y_test]
+new_X = [np.argmax(item) for item in score ]
+y_test2 = [np.argmax(item) for item in y_test]
 
 # Calculating categorical accuracy taking label having highest probability
-accuracy = [ (x==y) for x,y in zip(new_X,y_test2) ]
-print(" Accuracy on Test set : " , np.mean(accuracy))
+accuracy = [(x == y) for x, y in zip(new_X,y_test2)]
+print(" Accuracy on Test set : ", np.mean(accuracy))
