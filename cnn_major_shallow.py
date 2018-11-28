@@ -84,12 +84,12 @@ def baseline_model():
     model.add(Flatten())
 
     # Fully connected layer 1st layer
-    model.add(Dense(256))
+    model.add(Dense(512))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Dropout(0.25))
 
-    model.add(Dense(num_class, activation='sigmoid'))
+    model.add(Dense(num_class, activation='softmax'))
 
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[categorical_accuracy])
     return model
@@ -107,7 +107,7 @@ def baseline_model_saved():
     return model
 
 
-is_model_saved = True
+is_model_saved = False
 
 
 # If model is not saved train the CNN model otherwise just load the weights
