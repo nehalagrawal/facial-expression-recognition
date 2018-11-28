@@ -54,7 +54,8 @@ X = X.reshape(N, 48, 48, 1)
 
 # Split in  training set : validation set :  testing set in 80:10:10
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, random_state=0)
-y_train = (np.arange(num_class) == y_train[:, None]).astype(np.float32)
+y_train = (np.arange(num_class) == y_train[:, None]).astype(np.float32)  # Convert the y training data classes into a
+# vector for each class. So, for ex. 3 becomes [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
 y_test = (np.arange(num_class) == y_test[:, None]).astype(np.float32)
 
 batch_size = 128
@@ -67,7 +68,8 @@ def baseline_model():
     model = Sequential()
 
     # 1 - Convolution
-    model.add(Conv2D(64, (3, 3), border_mode='same', input_shape=(48, 48, 1)))
+    model.add(Conv2D(64, (3, 3), border_mode='same', input_shape=(48, 48, 1)))  # Keeping the border mode same ensures
+    # the same size of output as input (so, padding)
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
