@@ -1,0 +1,79 @@
+2018-11-27 01:00:09.969406: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+Train on 28709 samples, validate on 3589 samples
+Epoch 1/15
+ - 795s - loss: 0.3614 - categorical_accuracy: 0.3751 - val_loss: 0.3719 - val_categorical_accuracy: 0.3664
+Epoch 2/15
+ - 788s - loss: 0.3028 - categorical_accuracy: 0.4880 - val_loss: 0.2983 - val_categorical_accuracy: 0.4971
+Epoch 3/15
+ - 785s - loss: 0.2727 - categorical_accuracy: 0.5506 - val_loss: 0.2882 - val_categorical_accuracy: 0.5155
+Epoch 4/15
+ - 786s - loss: 0.2498 - categorical_accuracy: 0.5963 - val_loss: 0.3297 - val_categorical_accuracy: 0.4756
+Epoch 5/15
+ - 783s - loss: 0.2280 - categorical_accuracy: 0.6388 - val_loss: 0.2828 - val_categorical_accuracy: 0.5364
+Epoch 6/15
+ - 784s - loss: 0.2052 - categorical_accuracy: 0.6827 - val_loss: 0.3008 - val_categorical_accuracy: 0.5091
+Epoch 7/15
+ - 782s - loss: 0.1847 - categorical_accuracy: 0.7202 - val_loss: 0.3432 - val_categorical_accuracy: 0.4817
+Epoch 8/15
+ - 785s - loss: 0.1628 - categorical_accuracy: 0.7592 - val_loss: 0.2811 - val_categorical_accuracy: 0.5687
+Epoch 9/15
+ - 786s - loss: 0.1398 - categorical_accuracy: 0.8008 - val_loss: 0.3064 - val_categorical_accuracy: 0.5302
+Epoch 10/15
+ - 790s - loss: 0.1193 - categorical_accuracy: 0.8326 - val_loss: 0.3403 - val_categorical_accuracy: 0.5224
+Epoch 11/15
+ - 782s - loss: 0.1037 - categorical_accuracy: 0.8576 - val_loss: 0.3090 - val_categorical_accuracy: 0.5634
+Epoch 12/15
+ - 781s - loss: 0.0890 - categorical_accuracy: 0.8784 - val_loss: 0.3333 - val_categorical_accuracy: 0.5300
+Epoch 13/15
+ - 783s - loss: 0.0767 - categorical_accuracy: 0.8991 - val_loss: 0.3138 - val_categorical_accuracy: 0.5729
+Epoch 14/15
+ - 789s - loss: 0.0664 - categorical_accuracy: 0.9164 - val_loss: 0.3286 - val_categorical_accuracy: 0.5508
+Epoch 15/15
+ - 792s - loss: 0.0573 - categorical_accuracy: 0.9304 - val_loss: 0.3456 - val_categorical_accuracy: 0.5550
+Using TensorFlow backend.
+cnn_major_shallow.py:70: UserWarning: Update your `Conv2D` call to the Keras 2 API: `Conv2D(64, (3, 3), input_shape=(48, 48, 1..., padding="same")`
+  model.add(Conv2D(64, (3, 3), border_mode='same', input_shape=(48, 48, 1)))
+cnn_major_shallow.py:77: UserWarning: Update your `Conv2D` call to the Keras 2 API: `Conv2D(128, (5, 5), padding="same")`
+  model.add(Conv2D(128, (5, 5), border_mode='same'))
+Saved model to disk
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d_1 (Conv2D)            (None, 48, 48, 64)        640       
+_________________________________________________________________
+batch_normalization_1 (Batch (None, 48, 48, 64)        256       
+_________________________________________________________________
+activation_1 (Activation)    (None, 48, 48, 64)        0         
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 24, 24, 64)        0         
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 24, 24, 64)        0         
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 24, 24, 128)       204928    
+_________________________________________________________________
+batch_normalization_2 (Batch (None, 24, 24, 128)       512       
+_________________________________________________________________
+activation_2 (Activation)    (None, 24, 24, 128)       0         
+_________________________________________________________________
+max_pooling2d_2 (MaxPooling2 (None, 12, 12, 128)       0         
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 12, 12, 128)       0         
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 18432)             0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 512)               9437696   
+_________________________________________________________________
+batch_normalization_3 (Batch (None, 512)               2048      
+_________________________________________________________________
+activation_3 (Activation)    (None, 512)               0         
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 512)               0         
+_________________________________________________________________
+dense_2 (Dense)              (None, 7)                 3591      
+=================================================================
+Total params: 9,649,671
+Trainable params: 9,648,263
+Non-trainable params: 1,408
+_________________________________________________________________
+None
+ Accuracy on Test set :  0.5631095012538312
