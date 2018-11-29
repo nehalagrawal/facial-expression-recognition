@@ -2,8 +2,8 @@ from __future__ import print_function
 import numpy as np
 
 # get the data
-filename = 'fer2013.csv'
-label_map = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
+filename = 'fer2013_nozero.csv'
+label_map = ['Anger', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
 
 def getData(filename):
