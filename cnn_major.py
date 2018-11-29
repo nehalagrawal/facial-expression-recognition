@@ -5,6 +5,7 @@ import numpy as np
 filename = 'fer2013.csv'
 label_map = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
+
 def getData(filename):
     # images are 48x48
     # N = 35887
@@ -34,6 +35,7 @@ def balance_class(Y):
         count_class[i] = sum([1 for y in Y if y == i])
     return count_class
 
+
 balance = balance_class(Y)
 
 # keras with tensorflow backend
@@ -58,8 +60,8 @@ from keras.models import model_from_json
 from keras.optimizers import *
 from keras.layers.normalization import BatchNormalization
 
-batch_size = 128
-epochs = 124
+batch_size = 256
+epochs = 512
 
 #Main CNN model with four Convolution layer & two fully connected layer
 def baseline_model():
@@ -113,7 +115,7 @@ def baseline_model():
 
     model.add(Dense(num_class, activation='sigmoid'))
 
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[categorical_accuracy])
+    model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=[categorical_accuracy])
     return model
 
 
@@ -125,13 +127,14 @@ def baseline_model_saved():
     model = model_from_json(loaded_model_json)
     #load weights from h5 file
     model.load_weights("model_4layer_2_2_pool.h5")
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[categorical_accuracy])
+    model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=[categorical_accuracy])
     return model
+
 
 is_model_saved = True
 
 # If model is not saved train the CNN model otherwise just load the weights
-if(is_model_saved==False ):
+if not is_model_saved:
     # Train model
     model = baseline_model()
     # Note : 3259 samples is used as validation data &   28,709  as training samples
@@ -157,9 +160,9 @@ else:
 score = model.predict(X_test)
 print (model.summary())
 
-new_X = [ np.argmax(item) for item in score ]
-y_test2 = [ np.argmax(item) for item in y_test]
+new_X = [np.argmax(item) for item in score]
+y_test2 = [np.argmax(item) for item in y_test]
 
 # Calculating categorical accuracy taking label having highest probability
-accuracy = [ (x==y) for x,y in zip(new_X,y_test2) ]
-print(" Accuracy on Test set : " , np.mean(accuracy))
+accuracy = [(x == y) for x,y in zip(new_X,y_test2)]
+print(" Accuracy on Test set : ", np.mean(accuracy))
