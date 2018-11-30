@@ -162,3 +162,4 @@ def getData(filname):
         writer = csv.writer(outfile)
         writer.writerows(to_write)
 
+getData(filname)
