@@ -3,6 +3,7 @@ import numpy as np
 import csv
 import cv2
 import scipy
+import scipy.misc
 import imutils
 
 to_write = list()
@@ -15,7 +16,7 @@ def Flip(data):
 
 def Roated15Left(data):
     num_rows, num_cols = data.shape[:2]
-    rotation_matrix = cv2.getRotationMatrix2D((num_cols/2, num_rows/2), 30, 1)
+    rotation_matrix = cv2.getRotationMatrix2D((num_cols/2, num_rows/2), -30, 1)
     img_rotation = cv2.warpAffine(data, rotation_matrix, (num_cols, num_rows))
     return img_rotation.reshape(2304).tolist()
 
@@ -100,7 +101,7 @@ def Zerocenter_ZCA_whitening_Global_Contrast_Normalize(list):
 
 
 # get the data
-filname = 'fer2013.csv'
+filname = '/content/drive/My Drive/ECS 289 Deep Learning/Dataset/all/fer2013/fer2013.csv'
 label_map = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
 def getData(filname):
@@ -110,7 +111,7 @@ def getData(filname):
     X = []
     first = True
     
-    with open("badtrainingdata.txt", "r") as text:
+    with open("/content/drive/My Drive/ECS 289 Deep Learning/badtrainingdata.txt", "r") as text:
         ToBeRemovedTrainingData = []
         for line in text:
             ToBeRemovedTrainingData.append(int(line))
@@ -126,39 +127,42 @@ def getData(filname):
               row = line.split(',')
               to_write.append([row[0], row[1], data_class])
 
-              flipped = Flip(row[1])
-              to_write.append([row[0], ' '.join(flipped), data_class])
+              x = row[1].split(' ')
+              x = np.asarray(x, dtype=np.uint8)
 
-              rotated_left = Roated15Left(row[1])
-              to_write.append([row[0], ' '.join(rotated_left), data_class])
+              flipped = Flip(x)
+              to_write.append([row[0], ' '.join(map(str, flipped)), data_class])
 
-              rotated_right = Roated15Right(row[1])
-              to_write.append([row[0], ' '.join(rotated_right), data_class])
+              rotated_left = Roated15Left(np.reshape(x, (-1, 48)))
+              to_write.append([row[0], ' '.join(map(str, rotated_left)), data_class])
 
-              zoomed = Zoomed(row[1])
-              to_write.append([row[0], ' '.join(zoomed), data_class])
+              rotated_right = Roated15Right(np.reshape(x, (-1, 48)))
+              to_write.append([row[0], ' '.join(map(str, rotated_right)), data_class])
 
-              shifted_up = shiftedUp20(row[1])
-              to_write.append([row[0], ' '.join(shifted_up), data_class])
+              zoomed = Zoomed(np.reshape(x, (-1, 48)))
+              to_write.append([row[0], ' '.join(map(str, zoomed)), data_class])
 
-              shifted_down = shiftedDown20(row[1])
-              to_write.append([row[0], ' '.join(shifted_down), data_class])
+              shifted_up = shiftedUp20(np.reshape(x, (-1, 48)))
+              to_write.append([row[0], ' '.join(map(str, shifted_up)), data_class])
 
-              shifted_left = shiftedLeft20(row[1])
-              to_write.append([row[0], ' '.join(shifted_left), data_class])
+              shifted_down = shiftedDown20(np.reshape(x, (-1, 48)))
+              to_write.append([row[0], ' '.join(map(str, shifted_down)), data_class])
 
-              shifted_right = shiftedRight20(row[1])
-              to_write.append([row[0], ' '.join(shifted_right), data_class])
+              shifted_left = shiftedLeft20(np.reshape(x, (-1, 48)))
+              to_write.append([row[0], ' '.join(map(str, shifted_left)), data_class])
+
+              shifted_right = shiftedRight20(np.reshape(x, (-1, 48)))
+              to_write.append([row[0], ' '.join(map(str, shifted_right)), data_class])
 
               temp_list = list()
               for pixel in row[1].split(' '):
                 temp_list.append(int(pixel))
               data = Zerocenter_ZCA_whitening_Global_Contrast_Normalize(temp_list)
               X.append(map(int, data.reshape(2304).tolist()))
-              to_write.append([row[0], ' '.join(map(int, X[len(X) - 1])), data_class])
+              to_write.append([row[0], ' '.join(map(str, X[len(X) - 1])), data_class])
 
 
-    with open('newfer2013.csv', 'w') as outfile:
+    with open('/content/drive/My Drive/ECS 289 Deep Learning/newfer2013.csv', 'w') as outfile:
         writer = csv.writer(outfile)
         writer.writerows(to_write)
 
