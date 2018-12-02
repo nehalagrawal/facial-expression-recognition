@@ -1,3 +1,7 @@
+# To Run on CoLab Notebook, this mounts the google drive
+# from google.colab import drive
+# drive.mount('/content/drive')
+
 from __future__ import print_function
 import numpy as np
 
