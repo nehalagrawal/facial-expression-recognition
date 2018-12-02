@@ -2,7 +2,7 @@ from __future__ import print_function
 import numpy as np
 
 # get the data
-filname = 'fer2013.csv'
+filname = 'fer2013/fer2013.csv'
 label_map = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
 def getData(filname):
@@ -107,7 +107,7 @@ def baseline_model_saved():
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[categorical_accuracy])
     return model
 
-is_model_saved = True
+is_model_saved = False
 
 # If model is not saved train the CNN model otherwise just load the weights
 if(is_model_saved==False ):
